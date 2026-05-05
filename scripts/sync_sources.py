@@ -102,19 +102,19 @@ def main() -> int:
             dest = IMPORTED_DIR / dest_rel
             try:
                 raw = fetch_file(session, repo, branch, src)
+                
+                suffix = Path(src).suffix.lower()
+                if suffix in BINARY_SUFFIXES:
+                    data = raw
+                else:
+                    text = raw.decode("utf-8")
+                    text = apply_redactions(text, redactions)
+                    text = apply_link_rewrites(text, link_rewrites)
+                    data = text.encode("utf-8")
             except Exception as exc:  # noqa: BLE001
                 print(f"  FAIL {repo}:{src} — {exc}", file=sys.stderr)
                 failures += 1
                 continue
-
-            suffix = Path(src).suffix.lower()
-            if suffix in BINARY_SUFFIXES:
-                data = raw
-            else:
-                text = raw.decode("utf-8")
-                text = apply_redactions(text, redactions)
-                text = apply_link_rewrites(text, link_rewrites)
-                data = text.encode("utf-8")
 
             if write_file(dest, data):
                 print(f"  WROTE  {dest.relative_to(REPO_ROOT)}  ({name}: {src})")
