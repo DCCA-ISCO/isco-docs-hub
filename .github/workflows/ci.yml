@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install \
+            "mkdocs-material>=9.5" \
+            "pymdown-extensions>=10.0" \
+            pyyaml \
+            requests
+
+      - name: Validate sources.yaml
+        run: python -c "import yaml; yaml.safe_load(open('config/sources.yaml'))"
+
+      - name: Validate redactions.yaml
+        run: python -c "import yaml; yaml.safe_load(open('config/redactions.yaml'))"
+
+      - name: Build site
+        # Not using --strict: imported docs may contain links to source-repo
+        # files we intentionally don't publish (operations runbooks, etc.).
+        # Warnings are surfaced in the log without aborting.
+        run: mkdocs build

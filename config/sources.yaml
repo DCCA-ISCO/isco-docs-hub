@@ -1,0 +1,38 @@
+# Source allowlist — explicit list of files pulled from external repos.
+#
+# Each source declares:
+#   name:   short identifier (used as folder name under docs/imported/)
+#   repo:   <org>/<repo>
+#   branch: branch to pull from (typically main)
+#   files:  list of {src, dest} pairs
+#
+# Image and other binary files (.png/.jpg/.gif/.pdf/.svg) are copied as-is.
+# Markdown files are passed through redactions defined in config/redactions.yaml.
+#
+# To add a source repository:
+#   1. Append a new entry below.
+#   2. Open a PR. CI will validate sources.yaml.
+#   3. On merge, the next sync run pulls the new files into docs/imported/.
+#
+# The source repository does NOT need any setup. The hub pulls; sources don't push.
+
+sources:
+  - name: wordpress-aws
+    repo: DCCA-ISCO/DCCA-WPSITE
+    branch: main
+    files:
+      - src: docs/SOLUTIONS_ARCHITECT.md
+        dest: wordpress-aws/architecture.md
+      - src: docs/SECURITY_REVIEW.md
+        dest: wordpress-aws/security.md
+      - src: docs/images/WPSiteDiagram.png
+        dest: wordpress-aws/images/WPSiteDiagram.png
+    link_rewrites:
+      # Internal renames: SECURITY_REVIEW.md → security.md (the published name)
+      - description: Map SECURITY_REVIEW.md to its published filename
+        pattern: '\]\(SECURITY_REVIEW\.md(#[^)]*)?\)'
+        replace: '](security.md\1)'
+      # Unpublished sibling docs: redirect to their GitHub source so the link works
+      - description: Point unpublished sibling docs at GitHub source repo
+        pattern: '\]\((OPERATIONS|PATCH_MANAGEMENT_STRATEGY|PATCH_REGISTER)\.md(#[^)]*)?\)'
+        replace: '](https://github.com/DCCA-ISCO/DCCA-WPSITE/blob/main/docs/\1.md\2)'

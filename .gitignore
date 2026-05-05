@@ -1,0 +1,29 @@
+# MkDocs build output
+site/
+
+# NOTE: docs/imported/ IS committed. sync.yml opens a PR when imports change,
+# providing a review gate before publication. deploy.yml builds from the
+# committed state on main — deterministic and reviewable.
+
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfplan
+terraform/*.tfvars
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp

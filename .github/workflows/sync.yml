@@ -1,0 +1,44 @@
+name: Sync source repos
+
+on:
+  schedule:
+    - cron: "0 18 * * *" # 08:00 HST daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml requests
+
+      - name: Run sync script
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/sync_sources.py
+
+      - name: Open PR if imported docs changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: sync imported docs from source repos"
+          title: "chore: sync imported docs from source repos"
+          body: |
+            Automated sync from `config/sources.yaml`.
+
+            Review the diff to verify redactions look correct, then merge to publish.
+          branch: chore/sync-imported-docs
+          delete-branch: true
+          add-paths: docs/imported/**

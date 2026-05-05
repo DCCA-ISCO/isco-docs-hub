@@ -1,0 +1,42 @@
+# Redaction rules applied to every Markdown file pulled by sync_sources.py.
+#
+# Each rule is a regex pattern and a replacement string.
+# Order matters — rules are applied top to bottom.
+#
+# CIDRs are intentionally NOT redacted — they're the most useful detail for
+# stakeholders and least sensitive (RFC1918 of public-facing services).
+#
+# Binary files (images, PDFs) are not redacted.
+
+redactions:
+  - description: AWS account IDs (DCCA dev, prod, sandbox)
+    pattern: '\b(390844744503|565393047558|314562758677)\b'
+    replace: '<aws-account-id>'
+
+  - description: VPC IDs
+    pattern: 'vpc-[0-9a-f]{8,17}'
+    replace: 'vpc-XXXXXXXXX'
+
+  - description: Subnet IDs
+    pattern: 'subnet-[0-9a-f]{8,17}'
+    replace: 'subnet-XXXXXXXXX'
+
+  - description: Transit Gateway IDs
+    pattern: 'tgw-[0-9a-f]{8,17}'
+    replace: 'tgw-XXXXXXXXX'
+
+  - description: Security Group IDs
+    pattern: 'sg-[0-9a-f]{8,17}'
+    replace: 'sg-XXXXXXXXX'
+
+  - description: AMI IDs
+    pattern: 'ami-[0-9a-f]{8,17}'
+    replace: 'ami-XXXXXXXXX'
+
+  - description: KMS Key ARNs
+    pattern: 'arn:aws:kms:[a-z0-9-]+:\d+:key/[a-f0-9-]+'
+    replace: 'arn:aws:kms:<region>:<account>:key/<key-id>'
+
+  - description: IAM Role ARNs (account ID component)
+    pattern: 'arn:aws:iam::\d+:role/'
+    replace: 'arn:aws:iam::<account>:role/'
