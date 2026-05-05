@@ -94,12 +94,28 @@ Each environment uses an existing VPC with three subnet tiers across two AZs:
 
 ```
 VPC
-├── Public Subnets (2)     — ALB, NAT Gateways
-├── Private Subnets (2)    — EC2 instances, NLB, EFS mount targets
-└── Database Subnets (2)   — RDS (isolated, no internet route)
+├── Public ("Web") Subnets (2)  — TGW transit, NAT Gateways
+├── Application Subnets (2)     — NLB, ALB, EC2, EFS mount targets
+└── Database Subnets (2)        — RDS (isolated, no internet route)
 ```
 
-EC2 instances have no public IPs. Outbound internet access routes through NAT Gateways in the public subnets.
+EC2 instances have no public IPs. Outbound traffic routes via Transit Gateway (`tgw-XXXXXXXXX` in prod) to the centralized egress path; there is no Internet Gateway on the workload VPCs. Both load balancers (NLB and internal ALB) live in the Application tier — the prod NLB static IPs (`10.115.13.110`, `10.115.13.150`) sit in the Application subnet CIDRs.
+
+### Address Space (Production, as of 2026-05-04)
+
+| Element | Identifier | CIDR |
+|---|---|---|
+| Region | `us-west-2` (Oregon) | — |
+| VPC | `vpc-XXXXXXXXX` (Production VPC) | `10.115.12.0/22` |
+| Production-Web-1 (AZ-a) | `subnet-XXXXXXXXX` | `10.115.12.0/25` |
+| Production-Web-2 (AZ-b) | `subnet-XXXXXXXXX` | `10.115.12.128/25` |
+| Production-Application-1 (AZ-a) | `subnet-XXXXXXXXX` | `10.115.13.0/25` |
+| Production-Application-2 (AZ-b) | `subnet-XXXXXXXXX` | `10.115.13.128/25` |
+| Production-DataBase-1 (AZ-a) | `subnet-XXXXXXXXX` | `10.115.14.0/25` |
+| Production-Database-2 (AZ-b) | `subnet-XXXXXXXXX` | `10.115.14.128/25` |
+| Transit Gateway | `tgw-XXXXXXXXX` | (north-south + east-west) |
+
+VPC and subnet allocation is owned by the DCCA network team. Dev and sandbox use the same `10.115.x.0` second octet pattern in their respective accounts. If a CIDR change is suspected, verify in the AWS Console under VPC → Subnets.
 
 ### Cross-Account Access
 
