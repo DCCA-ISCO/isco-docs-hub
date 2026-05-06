@@ -60,3 +60,14 @@ nav:
   - WordPress (cca.hawaii.gov):
     - Architecture: imported/wordpress-aws/architecture.md
     - Security Review: imported/wordpress-aws/security.md
+  - CI/CD:
+    - Overview: imported/cicd/README.md
+    - Responsibilities: imported/cicd/docs/00-RESPONSIBILITIES-BREAKDOWN.md
+    - Pipeline Overview: imported/cicd/docs/01-OVERVIEW.md
+    - AWS Infrastructure Setup: imported/cicd/docs/02-AWS-INFRASTRUCTURE-SETUP.md
+    - GitHub Configuration: imported/cicd/docs/03-GITHUB-CONFIGURATION.md
+    - Testing Standards: imported/cicd/docs/04-TESTING-STANDARDS.md
+    - Security Standards: imported/cicd/docs/05-SECURITY-STANDARDS.md
+    - SSM Deployment SOP: imported/cicd/docs/06-SSM-DEPLOYMENT-SOP.md
+    - Troubleshooting: imported/cicd/docs/07-TROUBLESHOOTING.md
+    - Workflow Customization: imported/cicd/docs/08-WORKFLOW-CUSTOMIZATION.md

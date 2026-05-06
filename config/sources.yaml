@@ -36,3 +36,37 @@ sources:
       - description: Point unpublished sibling docs at GitHub source repo
         pattern: '\]\((OPERATIONS|PATCH_MANAGEMENT_STRATEGY|PATCH_REGISTER)\.md(#[^)]*)?\)'
         replace: '](https://github.com/DCCA-ISCO/DCCA-WPSITE/blob/main/docs/\1.md\2)'
+
+  - name: cicd
+    repo: DCCA-ISCO/.github
+    branch: main
+    files:
+      - src: README.md
+        dest: cicd/README.md
+      - src: docs/00-RESPONSIBILITIES-BREAKDOWN.md
+        dest: cicd/docs/00-RESPONSIBILITIES-BREAKDOWN.md
+      - src: docs/01-OVERVIEW.md
+        dest: cicd/docs/01-OVERVIEW.md
+      - src: docs/02-AWS-INFRASTRUCTURE-SETUP.md
+        dest: cicd/docs/02-AWS-INFRASTRUCTURE-SETUP.md
+      - src: docs/03-GITHUB-CONFIGURATION.md
+        dest: cicd/docs/03-GITHUB-CONFIGURATION.md
+      - src: docs/04-TESTING-STANDARDS.md
+        dest: cicd/docs/04-TESTING-STANDARDS.md
+      - src: docs/05-SECURITY-STANDARDS.md
+        dest: cicd/docs/05-SECURITY-STANDARDS.md
+      - src: docs/06-SSM-DEPLOYMENT-SOP.md
+        dest: cicd/docs/06-SSM-DEPLOYMENT-SOP.md
+      - src: docs/07-TROUBLESHOOTING.md
+        dest: cicd/docs/07-TROUBLESHOOTING.md
+      - src: docs/08-WORKFLOW-CUSTOMIZATION.md
+        dest: cicd/docs/08-WORKFLOW-CUSTOMIZATION.md
+    link_rewrites:
+      # workflow-templates/ and workflows/ aren't published as docs pages
+      # (they're .yml files). Redirect README links to GitHub source.
+      - description: Point workflow-templates/ links at GitHub source
+        pattern: '\]\(workflow-templates/([^)]*)\)'
+        replace: '](https://github.com/DCCA-ISCO/.github/tree/main/workflow-templates/\1)'
+      - description: Point workflows/ links at GitHub source
+        pattern: '\]\(workflows/([^)]+)\)'
+        replace: '](https://github.com/DCCA-ISCO/.github/blob/main/workflows/\1)'
