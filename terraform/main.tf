@@ -162,13 +162,19 @@ resource "aws_cloudfront_response_headers_policy" "security" {
     content_type_options {
       override = true
     }
-    frame_options {
-      frame_option = "SAMEORIGIN" # allow SP embed via web part on same SP origin family
-      override     = true
-    }
+    # Frame embedding controlled via CSP frame-ancestors (below).
+    # X-Frame-Options intentionally omitted: SAMEORIGIN would block the
+    # SharePoint embed since SP serves from a different origin, and
+    # frame-ancestors supersedes X-Frame-Options in modern browsers.
     referrer_policy {
       referrer_policy = "strict-origin-when-cross-origin"
       override        = true
+    }
+    content_security_policy {
+      # Allow this site to be iframed only by the DCCA SharePoint tenant
+      # (and itself, for same-origin testing).
+      content_security_policy = "frame-ancestors 'self' https://hawaiioimt.sharepoint.com"
+      override                = true
     }
   }
 }
