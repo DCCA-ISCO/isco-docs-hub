@@ -70,3 +70,12 @@ sources:
       - description: Point workflows/ links at GitHub source
         pattern: '\]\(workflows/([^)]+)\)'
         replace: '](https://github.com/DCCA-ISCO/.github/blob/main/workflows/\1)'
+
+  - name: security
+    repo: DCCA-ISCO/dcca-security
+    branch: main
+    files:
+      - src: docs/SECURITY_KNOWLEDGE_BASE.md
+        dest: security/knowledge-base.md
+      - src: docs/SETUP_WALKTHROUGH.md
+        dest: security/setup-walkthrough.md
