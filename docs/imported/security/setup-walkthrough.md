@@ -108,9 +108,32 @@ How the centralized security monitoring stack was built, step by step. Written s
 
 ## Step 7 — Notifications
 
-**Status:** Not yet implemented.
+**Status:** Deployed. Rule currently **disabled** to reduce noise while baseline findings are being remediated.
 
-**Plan:** Wire Security Hub findings to SNS topics for email and/or Slack alerting. This will cover findings from all integrated services (GuardDuty, Inspector, Config) in a single notification pipeline.
+**What:** EventBridge rule captures CRITICAL + HIGH Security Hub findings (NEW + ACTIVE) and invokes a Lambda that delivers alerts via two channels:
+- **Microsoft Teams:** Adaptive Card via Power Automate webhook (URL stored as SecureString in SSM: `/dcca/security/teams-webhook-url`)
+- **SES email:** To mahhomau@dcca.hawaii.gov, isco-infra@dcca.hawaii.gov, cfaso@dcca.hawaii.gov
+
+**Resources:**
+- Lambda: `dcca-security-hub-notify` (Python 3.12, 30s timeout)
+- EventBridge rule: `dcca-security-hub-critical-high` (currently disabled)
+- IAM role: `dcca-security-hub-notify-role`
+- Log group: `/aws/lambda/dcca-security-hub-notify` (30-day retention)
+
+**To re-enable:**
+```bash
+aws events enable-rule --name dcca-security-hub-critical-high --profile audit
+```
+
+**Note:** SES is in sandbox mode — emails only reach verified addresses until production access is requested from the SES console.
+
+## Step 7.5 — IAM Access Analyzer
+
+**What:** Deployed an org-wide IAM Access Analyzer (`dcca-org-analyzer`, type: ORGANIZATION) in the audit account.
+
+**Why:** Detects resource policies (S3 buckets, IAM roles, KMS keys, SQS queues, Lambda functions, Secrets Manager secrets) that grant access to principals outside the DCCA AWS organization. Findings flow into Security Hub automatically.
+
+**Prerequisite:** Management account must register the audit account as delegated admin for `access-analyzer.amazonaws.com` before applying.
 
 ---
 
