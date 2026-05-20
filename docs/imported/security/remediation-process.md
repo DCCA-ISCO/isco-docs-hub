@@ -19,12 +19,14 @@ Remediation targets are based on finding severity:
 
 | Severity | Target Remediation Window | Escalation If Missed |
 |---|---|---|
-| **CRITICAL** | 15 calendar days | Escalate to CFASO immediately |
-| **HIGH** | 30 calendar days | Escalate to CFASO at 30 days |
+| **CRITICAL** | 15 calendar days | Escalate to Peter Faso (cfaso@dcca.hawaii.gov) immediately |
+| **HIGH** | 30 calendar days | Escalate to Peter Faso (cfaso@dcca.hawaii.gov) at 30 days |
 | **MEDIUM** | 90 calendar days | Document at next monthly review |
 | **LOW** | 180 calendar days | Accept or document at next monthly review |
 
 The clock starts when the finding first appears as NEW/ACTIVE in Security Hub (or in the source tool for WPScan findings).
+
+**Exception — CISA Known Exploited Vulnerabilities (KEV):** Any finding tied to a vulnerability listed in the [CISA KEV catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) must be remediated within **7 calendar days**, regardless of the severity assigned by Security Hub. Inspector findings include CVE identifiers that can be cross-referenced against the KEV catalog.
 
 ---
 
@@ -66,7 +68,7 @@ When a finding cannot be remediated within the SLA (due to architectural constra
 3. Record the acceptance in `docs/TODOS.md` as a closed item with rationale
 4. Review accepted risks at each monthly review cycle to confirm they remain appropriate
 
-Risk acceptance decisions for CRITICAL findings require CFASO sign-off.
+Risk acceptance decisions for CRITICAL findings require Peter Faso (cfaso@dcca.hawaii.gov) sign-off.
 
 ---
 
@@ -74,7 +76,7 @@ Risk acceptance decisions for CRITICAL findings require CFASO sign-off.
 
 | Condition | Action |
 |---|---|
-| CRITICAL finding open > 15 days | ISCO-INFRA notifies CFASO (cfaso@dcca.hawaii.gov) |
-| HIGH finding open > 30 days | ISCO-INFRA notifies CFASO |
+| CRITICAL finding open > 15 days | ISCO-INFRA notifies Peter Faso (cfaso@dcca.hawaii.gov) (cfaso@dcca.hawaii.gov) |
+| HIGH finding open > 30 days | ISCO-INFRA notifies Peter Faso (cfaso@dcca.hawaii.gov) |
 | Finding requires cross-account coordination | ISCO-INFRA contacts the relevant account owner directly |
 | Finding in networking account may be intentional | Coordinate with networking team before remediating |
