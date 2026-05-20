@@ -71,3 +71,6 @@ nav:
     - SSM Deployment SOP: imported/cicd/docs/06-SSM-DEPLOYMENT-SOP.md
     - Troubleshooting: imported/cicd/docs/07-TROUBLESHOOTING.md
     - Workflow Customization: imported/cicd/docs/08-WORKFLOW-CUSTOMIZATION.md
+  - Security:
+    - Knowledge Base: imported/security/knowledge-base.md
+    - Setup Walkthrough: imported/security/setup-walkthrough.md

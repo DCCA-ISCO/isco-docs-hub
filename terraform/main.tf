@@ -132,6 +132,8 @@ data "aws_cloudfront_cache_policy" "optimized" {
 }
 
 # Rewrite "/foo/" → "/foo/index.html" so MkDocs' use_directory_urls works on S3.
+# Also enforces SharePoint-only access: blocks requests whose Referer is not from
+# the SharePoint tenant or from within the site itself (same-site nav inside the iframe).
 resource "aws_cloudfront_function" "url_rewrite" {
   name    = "isco-docs-hub-url-rewrite"
   runtime = "cloudfront-js-2.0"
@@ -139,6 +141,19 @@ resource "aws_cloudfront_function" "url_rewrite" {
     function handler(event) {
       var request = event.request;
       var uri = request.uri;
+      var referer = request.headers['referer'] ? request.headers['referer'].value : '';
+      var host = request.headers['host'] ? request.headers['host'].value : '';
+
+      if (!referer.startsWith('https://hawaiioimt.sharepoint.com') &&
+          !referer.startsWith('https://' + host)) {
+        return {
+          statusCode: 403,
+          statusDescription: 'Forbidden',
+          headers: { 'content-type': { value: 'text/plain' } },
+          body: 'Access restricted to DCCA SharePoint portal.'
+        };
+      }
+
       if (uri.endsWith('/')) {
         request.uri = uri + 'index.html';
       } else if (!uri.includes('.')) {
