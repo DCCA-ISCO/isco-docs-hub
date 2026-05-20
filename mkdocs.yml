@@ -74,3 +74,5 @@ nav:
   - Security:
     - Knowledge Base: imported/security/knowledge-base.md
     - Setup Walkthrough: imported/security/setup-walkthrough.md
+    - Remediation Process: imported/security/remediation-process.md
+    - Vulnerability Management: imported/security/vulnerability-management-process.md

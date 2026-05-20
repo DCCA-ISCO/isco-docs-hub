@@ -79,3 +79,7 @@ sources:
         dest: security/knowledge-base.md
       - src: docs/SETUP_WALKTHROUGH.md
         dest: security/setup-walkthrough.md
+      - src: docs/REMEDIATION_PROCESS.md
+        dest: security/remediation-process.md
+      - src: docs/VULNERABILITY_MANAGEMENT_PROCESS.md
+        dest: security/vulnerability-management-process.md
