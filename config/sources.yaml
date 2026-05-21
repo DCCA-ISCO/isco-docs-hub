@@ -87,6 +87,9 @@ sources:
       - description: Rewrite docs/ markdown links to full GitHub URLs
         pattern: '\]\(docs/([^)]+)\)'
         replace: '](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/\1)'
-      - description: Rewrite plain text docs/ path references to GitHub links
-        pattern: '(?<!\[)(?<!\()docs/([A-Z_]+\.md)'
+      - description: Rewrite backtick-wrapped docs/ paths to linked code spans
+        pattern: '`(docs/[A-Z_]+\.md)`'
+        replace: '[`\1`](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/\1)'
+      - description: Rewrite bare docs/ path references to GitHub links
+        pattern: '(?<!\[)(?<!\()(?<!`)(docs/[A-Z_]+\.md)(?!`)'
         replace: '[docs/\1](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/\1)'
