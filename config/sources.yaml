@@ -91,5 +91,5 @@ sources:
         pattern: '`(docs/[A-Z_]+\.md)`'
         replace: '[`\1`](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/\1)'
       - description: Rewrite bare docs/ path references to GitHub links
-        pattern: '(?<!\[)(?<!\()(?<!`)(docs/[A-Z_]+\.md)(?!`)'
+        pattern: '(?<!\[)(?<!\()(?<!`)(?<!\/)(docs/[A-Z_]+\.md)(?!`)'
         replace: '[docs/\1](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/\1)'
