@@ -9,11 +9,10 @@ edit_uri: ""
 theme:
   name: material
   features:
-    - navigation.tabs
     - navigation.sections
-    - navigation.expand
-    - navigation.top
     - navigation.indexes
+    - navigation.top
+    - navigation.expand
     - search.suggest
     - search.highlight
     - content.code.copy
@@ -58,9 +57,11 @@ markdown_extensions:
 nav:
   - Home: index.md
   - WordPress (cca.hawaii.gov):
+    - imported/wordpress-aws/index.md
     - Architecture: imported/wordpress-aws/architecture.md
     - Security Review: imported/wordpress-aws/security.md
   - CI/CD:
+    - imported/cicd/index.md
     - Overview: imported/cicd/README.md
     - Responsibilities: imported/cicd/docs/00-RESPONSIBILITIES-BREAKDOWN.md
     - Pipeline Overview: imported/cicd/docs/01-OVERVIEW.md
@@ -72,7 +73,10 @@ nav:
     - Troubleshooting: imported/cicd/docs/07-TROUBLESHOOTING.md
     - Workflow Customization: imported/cicd/docs/08-WORKFLOW-CUSTOMIZATION.md
   - Security:
+    - imported/security/index.md
     - Knowledge Base: imported/security/knowledge-base.md
     - Setup Walkthrough: imported/security/setup-walkthrough.md
     - Remediation Process: imported/security/remediation-process.md
     - Vulnerability Management: imported/security/vulnerability-management-process.md
+  - Manual Docs:
+    - docs/manual/index.md
