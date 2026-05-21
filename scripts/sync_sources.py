@@ -73,6 +73,16 @@ def apply_link_rewrites(text: str, rules: Iterable[dict]) -> str:
     return text
 
 
+def build_banner(repo: str, branch: str, src: str) -> str:
+    repo_url = f"https://github.com/{repo}"
+    file_url = f"https://github.com/{repo}/blob/{branch}/{src}"
+    return (
+        f'!!! info "Source"\n'
+        f'    Imported from [`{repo}`]({repo_url})'
+        f' · [View on GitHub]({file_url})\n\n'
+    )
+
+
 def write_file(dest: Path, data: bytes) -> bool:
     """Write data to dest if changed. Returns True if written, False if no change."""
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -110,6 +120,7 @@ def main() -> int:
                     text = raw.decode("utf-8")
                     text = apply_redactions(text, redactions)
                     text = apply_link_rewrites(text, link_rewrites)
+                    text = build_banner(repo, branch, src) + text
                     data = text.encode("utf-8")
             except Exception as exc:  # noqa: BLE001
                 print(f"  FAIL {repo}:{src} — {exc}", file=sys.stderr)

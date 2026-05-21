@@ -83,3 +83,10 @@ sources:
         dest: security/remediation-process.md
       - src: docs/VULNERABILITY_MANAGEMENT_PROCESS.md
         dest: security/vulnerability-management-process.md
+    link_rewrites:
+      - description: Rewrite docs/ markdown links to full GitHub URLs
+        pattern: '\]\(docs/([^)]+)\)'
+        replace: '](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/\1)'
+      - description: Rewrite plain text docs/ path references to GitHub links
+        pattern: '(?<!\[)(?<!\()docs/([A-Z_]+\.md)'
+        replace: '[docs/\1](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/\1)'
