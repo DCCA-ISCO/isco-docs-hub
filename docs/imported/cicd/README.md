@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/.github`](https://github.com/DCCA-ISCO/.github) · [View on GitHub](https://github.com/DCCA-ISCO/.github/blob/main/README.md)
+
 # CI/CD Pipeline Documentation & Templates
 
 This repository contains standardized CI/CD pipeline documentation, workflow templates, and best practices for Python applications deploying to AWS Windows Servers using Systems Manager (SSM).

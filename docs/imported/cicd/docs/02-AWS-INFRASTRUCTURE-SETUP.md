@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/.github`](https://github.com/DCCA-ISCO/.github) · [View on GitHub](https://github.com/DCCA-ISCO/.github/blob/main/docs/02-AWS-INFRASTRUCTURE-SETUP.md)
+
 # AWS Infrastructure Setup Guide
 
 ## Overview

@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/DCCA-WPSITE`](https://github.com/DCCA-ISCO/DCCA-WPSITE) · [View on GitHub](https://github.com/DCCA-ISCO/DCCA-WPSITE/blob/main/docs/SECURITY_REVIEW.md)
+
 # Security Review: WordPress AWS Architecture
 
 ## 1. AMI Hardening (Packer Build)

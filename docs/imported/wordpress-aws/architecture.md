@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/DCCA-WPSITE`](https://github.com/DCCA-ISCO/DCCA-WPSITE) · [View on GitHub](https://github.com/DCCA-ISCO/DCCA-WPSITE/blob/main/docs/SOLUTIONS_ARCHITECT.md)
+
 # Solutions Architect Document — DCCA WordPress
 
 **Site:** https://cca.hawaii.gov

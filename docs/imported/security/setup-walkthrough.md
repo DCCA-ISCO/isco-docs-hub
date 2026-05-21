@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/dcca-security`](https://github.com/DCCA-ISCO/dcca-security) · [View on GitHub](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/SETUP_WALKTHROUGH.md)
+
 # DCCA Security Services — Setup Walkthrough
 
 How the centralized security monitoring stack was built, step by step. Written so someone can understand what was done, why, and roughly how — without needing to read every Terraform file.

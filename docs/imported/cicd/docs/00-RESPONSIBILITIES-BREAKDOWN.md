@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/.github`](https://github.com/DCCA-ISCO/.github) · [View on GitHub](https://github.com/DCCA-ISCO/.github/blob/main/docs/00-RESPONSIBILITIES-BREAKDOWN.md)
+
 # Roles & Responsibilities Breakdown
 Recommended division of responsibilities between **DevOps** and **Solutions Team**.
 ## 🏗️ DevOps Responsibilities

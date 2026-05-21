@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/dcca-security`](https://github.com/DCCA-ISCO/dcca-security) · [View on GitHub](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/SECURITY_KNOWLEDGE_BASE.md)
+
 # DCCA Security Knowledge Base
 
 What security controls are in place, what they protect, and how to use them.
