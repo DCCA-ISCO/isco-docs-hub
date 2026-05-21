@@ -39,13 +39,13 @@ The clock starts when the finding first appears as NEW/ACTIVE in Security Hub (o
 
 2. **Triage** — ISCO-INFRA reviews the finding to confirm it is valid (not a false positive) and determines the affected resource and account owner.
 
-3. **Track** — Open findings are tracked in `[docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/TODOS.md)`. Each finding entry includes the Security Hub control ID, affected account, and the specific remediation action required.
+3. **Track** — Open findings are tracked in [`docs/TODOS.md`](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/[docs/docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/docs/TODOS.md)). Each finding entry includes the Security Hub control ID, affected account, and the specific remediation action required.
 
 4. **Remediate** — Apply the fix. Infrastructure changes are made via Terraform in `live/security-services/` where possible. Console-only fixes are documented with the account and steps taken.
 
 5. **Verify** — Security Hub auto-resolves findings when the underlying condition is corrected (typically within 24 hours for Config-based controls; Inspector re-scans occur within hours of package changes). Confirm the finding moves to `RESOLVED` status.
 
-6. **Close** — Mark the item in `[docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/TODOS.md)` as complete with the date resolved.
+6. **Close** — Mark the item in [`docs/TODOS.md`](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/[docs/docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/docs/TODOS.md)) as complete with the date resolved.
 
 ---
 
@@ -56,9 +56,9 @@ ISCO-INFRA conducts a monthly review of all open Security Hub findings. The revi
 - New CRITICAL and HIGH findings since the last review
 - Findings approaching or past their SLA window
 - Risk acceptances and suppressions — confirm they are still justified
-- Progress on findings tracked in `[docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/TODOS.md)`
+- Progress on findings tracked in [`docs/TODOS.md`](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/[docs/docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/docs/TODOS.md))
 
-The monthly review date and a brief summary of actions taken should be noted in the git commit history for `[docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/TODOS.md)`.
+The monthly review date and a brief summary of actions taken should be noted in the git commit history for [`docs/TODOS.md`](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/[docs/docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/docs/TODOS.md)).
 
 ---
 
@@ -68,7 +68,7 @@ When a finding cannot be remediated within the SLA (due to architectural constra
 
 1. Document the finding, reason for acceptance, and risk owner in the **Policy Decisions** table in `CLAUDE.md`
 2. Suppress the finding in Security Hub via `batch-update-findings` (set `WorkflowStatus = SUPPRESSED`)
-3. Record the acceptance in `[docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/TODOS.md)` as a closed item with rationale
+3. Record the acceptance in [`docs/TODOS.md`](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/[docs/docs/TODOS.md](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/docs/TODOS.md)) as a closed item with rationale
 4. Review accepted risks at each monthly review cycle to confirm they remain appropriate
 
 Risk acceptance decisions for CRITICAL findings require Peter Faso (cfaso@dcca.hawaii.gov) sign-off.
