@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/.github`](https://github.com/DCCA-ISCO/.github) · [View on GitHub](https://github.com/DCCA-ISCO/.github/blob/main/docs/03-GITHUB-CONFIGURATION.md)
+
 # GitHub Configuration Guide
 
 ## Overview

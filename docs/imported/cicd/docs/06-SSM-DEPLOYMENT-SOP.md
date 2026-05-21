@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/.github`](https://github.com/DCCA-ISCO/.github) · [View on GitHub](https://github.com/DCCA-ISCO/.github/blob/main/docs/06-SSM-DEPLOYMENT-SOP.md)
+
 # SSM Deployment Standard Operating Procedure (SOP)
 
 ## Overview

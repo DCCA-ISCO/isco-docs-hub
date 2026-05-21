@@ -1,3 +1,6 @@
+!!! info "Source"
+    Imported from [`DCCA-ISCO/.github`](https://github.com/DCCA-ISCO/.github) · [View on GitHub](https://github.com/DCCA-ISCO/.github/blob/main/docs/05-SECURITY-STANDARDS.md)
+
 # Security Standards and Best Practices
 
 ## Overview
