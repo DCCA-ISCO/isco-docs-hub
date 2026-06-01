@@ -79,6 +79,9 @@ nav:
     - Setup Walkthrough: imported/security/setup-walkthrough.md
     - Remediation Process: imported/security/remediation-process.md
     - Vulnerability Management: imported/security/vulnerability-management-process.md
+  - Scriptor:
+    - imported/scriptor/index.md
+    - Ideas: imported/scriptor/ideas.md
   # [IMPORTED_NAV_END]
   - Manual Docs:
     - manual/index.md
