@@ -67,18 +67,24 @@ Add a new entry to the `sources` list. Each entry has the following fields:
 ```yaml
 sources:
   - name: my-system              # Short ID. Becomes the folder under docs/imported/.
+    title: My System             # Display name shown in the site nav.
     repo: DCCA-ISCO/my-repo      # GitHub org/repo.
     branch: main                 # Branch to pull from.
     files:
       - src: docs/OVERVIEW.md    # Path to the file in the source repo.
         dest: my-system/overview.md  # Published path under docs/imported/.
+        nav_title: Overview      # Label shown in the nav sidebar.
       - src: docs/images/arch.png
-        dest: my-system/images/arch.png  # Images are copied as-is.
+        dest: my-system/images/arch.png  # Images are copied as-is (no nav_title needed).
 ```
+
+**`title`** — the section label in the left nav. If omitted, defaults to the title-cased `name` (e.g., `my-system` → `My System`).
+
+**`nav_title`** — the page label in the left nav. If omitted, defaults to the title-cased destination filename stem (e.g., `overview.md` → `Overview`).
 
 **Naming the `dest` path:** Use lowercase, hyphen-separated names (e.g., `my-system/setup-guide.md`). Avoid keeping the original uppercase filename — the hub uses clean, readable URLs.
 
-**Binary files** (`.png`, `.jpg`, `.gif`, `.svg`, `.pdf`) are copied without modification. Markdown files are passed through redactions (see below).
+**Binary files** (`.png`, `.jpg`, `.gif`, `.svg`, `.pdf`) are copied without modification and are never added to the nav. Markdown files are passed through redactions (see below).
 
 #### Step 3 — Handle broken links (optional but recommended)
 
@@ -111,11 +117,17 @@ CI will validate `sources.yaml` and do a full site build. Once the PR merges, th
 
 You can also trigger a sync immediately rather than waiting for the schedule:
 
-```
-gh workflow run sync.yml
-```
+=== "GitHub web UI"
+    1. Go to the [isco-docs-hub Actions tab](https://github.com/DCCA-ISCO/isco-docs-hub/actions/workflows/sync.yml)
+    2. Click **Run workflow** on the right side of the page
+    3. Leave the branch as `master` and click the green **Run workflow** button
 
-The sync creates a follow-up PR (`chore/sync-imported-docs`) with only the imported file changes. Review the diff to verify redactions look correct, then merge to publish.
+=== "gh CLI"
+    ```
+    gh workflow run sync.yml
+    ```
+
+The sync creates a follow-up PR (`chore/sync-imported-docs`) containing the pulled files, an auto-generated section landing page, and the updated nav. Review the diff to verify redactions look correct, then merge to publish.
 
 ---
 
@@ -156,7 +168,7 @@ Add your file to the `Manual Docs` section in `mkdocs.yml`:
 
 ```yaml
   - Manual Docs:
-    - docs/manual/index.md
+    - manual/index.md
     - Patch Management Policy: manual/patch-management-policy.md
     - Incident Response Plan: manual/incident-response-plan.md
 ```
