@@ -173,7 +173,7 @@ def generate_index_with_gemini(source: dict, api_key: str) -> str | None:
 
     try:
         client = genai.Client(api_key=api_key)
-        response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+        response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)
         return response.text.strip()
     except Exception as exc:
         print(f"  Gemini error: {exc}", file=sys.stderr)
