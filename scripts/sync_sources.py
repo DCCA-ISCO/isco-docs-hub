@@ -27,8 +27,12 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SOURCES_FILE = REPO_ROOT / "config" / "sources.yaml"
 REDACTIONS_FILE = REPO_ROOT / "config" / "redactions.yaml"
 IMPORTED_DIR = REPO_ROOT / "docs" / "imported"
+MKDOCS_FILE = REPO_ROOT / "mkdocs.yml"
 
 BINARY_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".pdf", ".svg", ".webp", ".ico"}
+
+NAV_START = "  # [IMPORTED_NAV_START]"
+NAV_END = "  # [IMPORTED_NAV_END]"
 
 
 def load_yaml(path: Path) -> dict:
@@ -83,6 +87,77 @@ def build_banner(repo: str, branch: str, src: str) -> str:
     )
 
 
+def nav_title_for(path_str: str) -> str:
+    """Derive a display title from a file path or identifier string."""
+    return Path(path_str).stem.replace("-", " ").replace("_", " ").title()
+
+
+def generate_imported_nav(sources: list) -> str:
+    """Build the YAML text for the imported nav section."""
+    lines = []
+    for source in sources:
+        title = source.get("title", nav_title_for(source["name"]))
+        name = source["name"]
+        lines.append(f"  - {title}:")
+        lines.append(f"    - imported/{name}/index.md")
+        for entry in source.get("files", []):
+            dest = entry["dest"]
+            if Path(dest).suffix.lower() in BINARY_SUFFIXES:
+                continue
+            label = entry.get("nav_title", nav_title_for(dest))
+            lines.append(f"    - {label}: imported/{dest}")
+    return "\n".join(lines)
+
+
+def update_mkdocs_nav(sources: list) -> bool:
+    """Replace the imported nav section in mkdocs.yml between sentinel markers."""
+    content = MKDOCS_FILE.read_text()
+    if NAV_START not in content or NAV_END not in content:
+        print("  SKIP mkdocs.yml — sentinel markers not found", file=sys.stderr)
+        return False
+    new_nav = generate_imported_nav(sources)
+    new_content = re.sub(
+        r"  # \[IMPORTED_NAV_START\].*?  # \[IMPORTED_NAV_END\]",
+        f"{NAV_START}\n{new_nav}\n{NAV_END}",
+        content,
+        flags=re.DOTALL,
+    )
+    if new_content == content:
+        return False
+    MKDOCS_FILE.write_text(new_content)
+    print("  UPDATED mkdocs.yml nav")
+    return True
+
+
+def ensure_index_page(source: dict) -> bool:
+    """Create a basic section index page if one does not already exist."""
+    name = source["name"]
+    title = source.get("title", nav_title_for(name))
+    repo = source["repo"]
+    dest = IMPORTED_DIR / name / "index.md"
+    if dest.exists():
+        return False
+    lines = [
+        f"# {title}",
+        "",
+        f"Source: [`{repo}`](https://github.com/{repo})",
+        "",
+        "| Document | Description |",
+        "|---|---|",
+    ]
+    for entry in source.get("files", []):
+        file_dest = entry["dest"]
+        if Path(file_dest).suffix.lower() in BINARY_SUFFIXES:
+            continue
+        label = entry.get("nav_title", nav_title_for(file_dest))
+        rel = str(Path(file_dest).relative_to(name))
+        lines.append(f"| [{label}]({rel}) | |")
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text("\n".join(lines) + "\n")
+    print(f"  CREATED {dest.relative_to(REPO_ROOT)}")
+    return True
+
+
 def write_file(dest: Path, data: bytes) -> bool:
     """Write data to dest if changed. Returns True if written, False if no change."""
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -132,6 +207,10 @@ def main() -> int:
                 written += 1
             else:
                 skipped += 1
+
+    update_mkdocs_nav(sources)
+    for source in sources:
+        ensure_index_page(source)
 
     print(f"\nSummary: {written} written, {skipped} unchanged, {failures} failed")
     return 1 if failures else 0

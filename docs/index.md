@@ -101,25 +101,15 @@ You can also use `link_rewrites` to remap a filename if you renamed it in `dest`
 
 Each rule is a Python-compatible regex `pattern` and a `replace` string. Rules are applied in order.
 
-#### Step 4 — Add a section landing page
+#### Step 4 — Open a PR
 
-Create a file at `docs/imported/<name>/index.md` with a brief description of the system and a table of the documents you are publishing. This becomes the landing page when a user clicks the section in the left nav.
+CI will validate `sources.yaml` and do a full site build. Once the PR merges, the next scheduled sync (daily at 08:00 HST) will automatically:
 
-#### Step 5 — Update `mkdocs.yml`
+- Pull the files into `docs/imported/`
+- Create a section landing page at `docs/imported/<name>/index.md` (if one doesn't already exist)
+- Add the section and its pages to the site nav in `mkdocs.yml`
 
-Add a nav section for your new source:
-
-```yaml
-nav:
-  ...
-  - My System:
-    - imported/my-system/index.md
-    - Overview: imported/my-system/overview.md
-```
-
-#### Step 6 — Open a PR
-
-CI will validate `sources.yaml` and do a full site build to catch broken nav references. Once the PR merges, the next scheduled sync (daily at 08:00 HST) will pull the files into `docs/imported/`. You can also trigger a sync immediately:
+You can also trigger a sync immediately rather than waiting for the schedule:
 
 ```
 gh workflow run sync.yml

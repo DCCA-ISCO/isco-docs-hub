@@ -1,30 +1,39 @@
 # Source allowlist — explicit list of files pulled from external repos.
 #
 # Each source declares:
-#   name:   short identifier (used as folder name under docs/imported/)
-#   repo:   <org>/<repo>
-#   branch: branch to pull from (typically main)
-#   files:  list of {src, dest} pairs
+#   name:     short identifier (used as folder name under docs/imported/)
+#   title:    display name used in the site nav (optional; defaults to title-cased name)
+#   repo:     <org>/<repo>
+#   branch:   branch to pull from (typically main)
+#   files:    list of {src, dest, nav_title} entries
+#     src:       path to the file in the source repo
+#     dest:      published path under docs/imported/
+#     nav_title: label shown in the nav (optional; defaults to title-cased dest stem)
 #
-# Image and other binary files (.png/.jpg/.gif/.pdf/.svg) are copied as-is.
+# Image and other binary files (.png/.jpg/.gif/.pdf/.svg) are copied as-is
+# and are never added to the nav.
 # Markdown files are passed through redactions defined in config/redactions.yaml.
 #
 # To add a source repository:
-#   1. Append a new entry below.
-#   2. Open a PR. CI will validate sources.yaml.
-#   3. On merge, the next sync run pulls the new files into docs/imported/.
+#   1. Append a new entry below with name, title, repo, branch, and files.
+#   2. Open a PR. CI will validate sources.yaml and build the site.
+#   3. On merge, the next sync run pulls the files, creates a section landing
+#      page if one does not exist, and updates the nav in mkdocs.yml automatically.
 #
 # The source repository does NOT need any setup. The hub pulls; sources don't push.
 
 sources:
   - name: wordpress-aws
+    title: WordPress (cca.hawaii.gov)
     repo: DCCA-ISCO/DCCA-WPSITE
     branch: main
     files:
       - src: docs/SOLUTIONS_ARCHITECT.md
         dest: wordpress-aws/architecture.md
+        nav_title: Architecture
       - src: docs/SECURITY_REVIEW.md
         dest: wordpress-aws/security.md
+        nav_title: Security Review
       - src: docs/images/WPSiteDiagram.png
         dest: wordpress-aws/images/WPSiteDiagram.png
     link_rewrites:
@@ -38,29 +47,40 @@ sources:
         replace: '](https://github.com/DCCA-ISCO/DCCA-WPSITE/blob/main/docs/\1.md\2)'
 
   - name: cicd
+    title: CI/CD
     repo: DCCA-ISCO/.github
     branch: main
     files:
       - src: README.md
         dest: cicd/README.md
+        nav_title: Overview
       - src: docs/00-RESPONSIBILITIES-BREAKDOWN.md
         dest: cicd/docs/00-RESPONSIBILITIES-BREAKDOWN.md
+        nav_title: Responsibilities
       - src: docs/01-OVERVIEW.md
         dest: cicd/docs/01-OVERVIEW.md
+        nav_title: Pipeline Overview
       - src: docs/02-AWS-INFRASTRUCTURE-SETUP.md
         dest: cicd/docs/02-AWS-INFRASTRUCTURE-SETUP.md
+        nav_title: AWS Infrastructure Setup
       - src: docs/03-GITHUB-CONFIGURATION.md
         dest: cicd/docs/03-GITHUB-CONFIGURATION.md
+        nav_title: GitHub Configuration
       - src: docs/04-TESTING-STANDARDS.md
         dest: cicd/docs/04-TESTING-STANDARDS.md
+        nav_title: Testing Standards
       - src: docs/05-SECURITY-STANDARDS.md
         dest: cicd/docs/05-SECURITY-STANDARDS.md
+        nav_title: Security Standards
       - src: docs/06-SSM-DEPLOYMENT-SOP.md
         dest: cicd/docs/06-SSM-DEPLOYMENT-SOP.md
+        nav_title: SSM Deployment SOP
       - src: docs/07-TROUBLESHOOTING.md
         dest: cicd/docs/07-TROUBLESHOOTING.md
+        nav_title: Troubleshooting
       - src: docs/08-WORKFLOW-CUSTOMIZATION.md
         dest: cicd/docs/08-WORKFLOW-CUSTOMIZATION.md
+        nav_title: Workflow Customization
     link_rewrites:
       # workflow-templates/ and workflows/ aren't published as docs pages
       # (they're .yml files). Redirect README links to GitHub source.
@@ -72,17 +92,22 @@ sources:
         replace: '](https://github.com/DCCA-ISCO/.github/blob/main/workflows/\1)'
 
   - name: security
+    title: Security
     repo: DCCA-ISCO/dcca-security
     branch: main
     files:
       - src: docs/SECURITY_KNOWLEDGE_BASE.md
         dest: security/knowledge-base.md
+        nav_title: Knowledge Base
       - src: docs/SETUP_WALKTHROUGH.md
         dest: security/setup-walkthrough.md
+        nav_title: Setup Walkthrough
       - src: docs/REMEDIATION_PROCESS.md
         dest: security/remediation-process.md
+        nav_title: Remediation Process
       - src: docs/VULNERABILITY_MANAGEMENT_PROCESS.md
         dest: security/vulnerability-management-process.md
+        nav_title: Vulnerability Management
     link_rewrites:
       - description: Rewrite docs/ markdown links to full GitHub URLs
         pattern: '\]\(docs/([^)]+)\)'
@@ -95,14 +120,14 @@ sources:
         replace: '[docs/\1](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/\1)'
 
   - name: scriptor
+    title: Scriptor
     repo: DCCA-ISCO/scriptor
     branch: main
     files:
       - src: docs/IDEAS.md
         dest: scriptor/ideas.md
+        nav_title: Ideas
     link_rewrites:
       - description: Rewrite docs/ markdown links to full GitHub URLs
         pattern: '\]\(docs/([^)]+)\)'
-        replace: '](https://github.com/DCCA-ISCO/scriptor/docs/IDEAS.md)'
-  
-        
+        replace: '](https://github.com/DCCA-ISCO/scriptor/blob/main/docs/\1)'
