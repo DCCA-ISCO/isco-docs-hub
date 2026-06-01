@@ -135,22 +135,7 @@ For documents that do not live in a GitHub repository, add them manually to the 
 
 #### Step 1 — Convert the document to Markdown
 
-The hub renders Markdown. You need to convert your source document before adding it.
-
-**From SharePoint:**
-
-1. Open the page or document in SharePoint.
-2. If it is a Word document (`.docx`), download it and convert using [Pandoc](https://pandoc.org/):
-   ```
-   pandoc input.docx -o output.md
-   ```
-3. If it is a SharePoint wiki page, copy the page content and paste it into a new `.md` file. Clean up any formatting that didn't transfer cleanly.
-
-**From a local file:**
-
-- `.docx` / `.pptx` — convert with Pandoc (see above).
-- `.pdf` — copy text content into a `.md` file, or export to Word first then convert.
-- Already Markdown — copy the file directly.
+The hub renders Markdown. You need to convert your source document before adding it. See the **[Conversion Guide](manual/converting-to-markdown.md)** for format-by-format instructions covering Word, SharePoint, PDF, HTML, and Google Docs — including how to install and use [Pandoc](https://pandoc.org/), handle images, and clean up the output before committing.
 
 Images referenced in the document should be placed in a subfolder alongside the markdown file (e.g., `docs/manual/my-doc/images/`).
 
