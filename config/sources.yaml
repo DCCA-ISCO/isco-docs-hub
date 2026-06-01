@@ -93,3 +93,16 @@ sources:
       - description: Rewrite bare docs/ path references to GitHub links
         pattern: '(?<!\[)(?<!\()(?<!`)(?<!\/)(docs/[A-Z_]+\.md)(?!`)'
         replace: '[docs/\1](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/\1)'
+
+  - name: scriptor
+    repo: DCCA-ISCO/scriptor
+    branch: main
+    files:
+      - src: docs/IDEAS.md
+        dest: scriptor/ideas.md
+    link_rewrites:
+      - description: Rewrite docs/ markdown links to full GitHub URLs
+        pattern: '\]\(docs/([^)]+)\)'
+        replace: '](https://github.com/DCCA-ISCO/scriptor/docs/IDEAS.md)'
+  
+        
