@@ -23,11 +23,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pyyaml requests
+          pip install pyyaml requests google-genai
 
       - name: Run sync script
         env:
           GH_TOKEN: ${{ secrets.GH_SYNC_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/sync_sources.py
 
       - name: Open PR if imported docs changed

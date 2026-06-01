@@ -129,22 +129,61 @@ def update_mkdocs_nav(sources: list) -> bool:
     return True
 
 
-def ensure_index_page(source: dict) -> bool:
-    """Create a basic section index page if one does not already exist."""
+def generate_index_with_gemini(source: dict, api_key: str) -> str | None:
+    """Ask Gemini to write an intro paragraph and document table for an index page."""
+    try:
+        from google import genai  # type: ignore[import]
+    except ImportError:
+        print("  Gemini skipped — google-genai not installed", file=sys.stderr)
+        return None
+
     name = source["name"]
     title = source.get("title", nav_title_for(name))
     repo = source["repo"]
-    dest = IMPORTED_DIR / name / "index.md"
-    if dest.exists():
-        return False
-    lines = [
-        f"# {title}",
-        "",
-        f"Source: [`{repo}`](https://github.com/{repo})",
-        "",
-        "| Document | Description |",
-        "|---|---|",
-    ]
+
+    file_blocks = []
+    for entry in source.get("files", []):
+        dest_rel = entry["dest"]
+        if Path(dest_rel).suffix.lower() in BINARY_SUFFIXES:
+            continue
+        label = entry.get("nav_title", nav_title_for(dest_rel))
+        rel = str(Path(dest_rel).relative_to(name))
+        dest = IMPORTED_DIR / dest_rel
+        content = ""
+        if dest.exists():
+            raw = dest.read_text(encoding="utf-8")
+            # Strip the source banner (first 3 lines) before sending to Gemini
+            content = "\n".join(raw.split("\n")[3:])[:3000]
+        file_blocks.append(f"### {label} ({rel})\n{content}")
+
+    prompt = (
+        f"You are writing a landing page for a documentation hub section.\n\n"
+        f"Section title: {title}\n"
+        f"Source repository: https://github.com/{repo}\n\n"
+        f"The section contains these documents:\n\n"
+        + "\n\n".join(file_blocks)
+        + "\n\n"
+        "Write the body of a Markdown landing page with:\n"
+        "1. A 1-2 sentence intro paragraph describing what this section covers.\n"
+        "2. A Markdown table with two columns: Document and Description.\n"
+        "   - Document column: a Markdown link — text is the label, href is the relative path shown in parentheses above.\n"
+        "   - Description column: a concise one-sentence summary drawn from the document content.\n\n"
+        "Output only the intro paragraph and the table. No headings, no extra commentary."
+    )
+
+    try:
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+        return response.text.strip()
+    except Exception as exc:
+        print(f"  Gemini error: {exc}", file=sys.stderr)
+        return None
+
+
+def _basic_index_body(source: dict) -> list[str]:
+    """Fallback: plain table with empty Description column."""
+    name = source["name"]
+    lines = ["| Document | Description |", "|---|---|"]
     for entry in source.get("files", []):
         file_dest = entry["dest"]
         if Path(file_dest).suffix.lower() in BINARY_SUFFIXES:
@@ -152,9 +191,33 @@ def ensure_index_page(source: dict) -> bool:
         label = entry.get("nav_title", nav_title_for(file_dest))
         rel = str(Path(file_dest).relative_to(name))
         lines.append(f"| [{label}]({rel}) | |")
+    return lines
+
+
+def ensure_index_page(source: dict) -> bool:
+    """Create a section index page if one does not already exist."""
+    name = source["name"]
+    title = source.get("title", nav_title_for(name))
+    repo = source["repo"]
+    dest = IMPORTED_DIR / name / "index.md"
+    if dest.exists():
+        return False
+
+    header = [
+        f"# {title}",
+        "",
+        f"Source: [`{repo}`](https://github.com/{repo})",
+        "",
+    ]
+
+    gemini_key = os.environ.get("GEMINI_API_KEY")
+    ai_body = generate_index_with_gemini(source, gemini_key) if gemini_key else None
+
+    body_lines = [ai_body] if ai_body else _basic_index_body(source)
+
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text("\n".join(lines) + "\n")
-    print(f"  CREATED {dest.relative_to(REPO_ROOT)}")
+    dest.write_text("\n".join(header + body_lines) + "\n")
+    print(f"  CREATED {dest.relative_to(REPO_ROOT)}" + (" (AI)" if ai_body else ""))
     return True
 
 
