@@ -2,17 +2,13 @@
 
 Central documentation for the DCCA ISCO team. Aggregates curated docs from GitHub repositories and manually maintained sources into one searchable place.
 
-## How this works
-
-- Each system maintains its source-of-truth docs in its own GitHub repository.
-- This hub pulls **selected** files from those repositories on a daily schedule (and on demand).
-- The source repo remains canonical. This site is a read-only, rendered, redacted view for stakeholders.
+Source-of-truth docs stay in their own repositories. This hub pulls selected files, applies redactions, and publishes a rendered, read-only view for stakeholders.
 
 If you spot an error, open a pull request against the **source repository** (linked at the top of each page) — not against `isco-docs-hub`.
 
 ---
 
-## Currently published
+## Currently Published
 
 ### WordPress (cca.hawaii.gov)
 Source: [`DCCA-ISCO/DCCA-WPSITE`](https://github.com/DCCA-ISCO/DCCA-WPSITE)
@@ -50,14 +46,156 @@ Source: [`DCCA-ISCO/dcca-security`](https://github.com/DCCA-ISCO/dcca-security)
 
 ---
 
-## Adding documentation
+## Adding Documentation
 
-### From a GitHub repository
-Open a PR to [`isco-docs-hub`](https://github.com/DCCA-ISCO/isco-docs-hub) adding an entry to `config/sources.yaml`. The hub pulls; source repos need no changes.
+### From a GitHub Repository
 
-### From SharePoint, local files, or other sources
-Place a Markdown file under `docs/manual/` in this repo and add it to `mkdocs.yml`. For SharePoint pages: export or copy content into Markdown format. For local files: convert to Markdown and commit directly.
+The hub pulls files from external repositories using an allowlist defined in [`config/sources.yaml`](https://github.com/DCCA-ISCO/isco-docs-hub/blob/master/config/sources.yaml). The source repository needs **no changes** — the hub pulls; sources don't push.
 
-## Privacy and redaction
+#### Prerequisites
 
-This site may be publicly accessible. Documents are filtered through `config/redactions.yaml` before publishing — AWS account IDs, resource identifiers, and ARNs are replaced with placeholders.
+The `GH_SYNC_TOKEN` secret in this repo must have read access to the source repository. If it does not, the sync will fail with a 404. Contact a repo admin to update the token scope before opening your PR.
+
+#### Step 1 — Identify the files you want to publish
+
+In the source repository, find the exact file paths you want to include. Example: `docs/ARCHITECTURE.md`, `docs/images/diagram.png`. Only files you explicitly list will be pulled — there is no wildcard or folder-level import.
+
+#### Step 2 — Edit `config/sources.yaml`
+
+Add a new entry to the `sources` list. Each entry has the following fields:
+
+```yaml
+sources:
+  - name: my-system              # Short ID. Becomes the folder under docs/imported/.
+    repo: DCCA-ISCO/my-repo      # GitHub org/repo.
+    branch: main                 # Branch to pull from.
+    files:
+      - src: docs/OVERVIEW.md    # Path to the file in the source repo.
+        dest: my-system/overview.md  # Published path under docs/imported/.
+      - src: docs/images/arch.png
+        dest: my-system/images/arch.png  # Images are copied as-is.
+```
+
+**Naming the `dest` path:** Use lowercase, hyphen-separated names (e.g., `my-system/setup-guide.md`). Avoid keeping the original uppercase filename — the hub uses clean, readable URLs.
+
+**Binary files** (`.png`, `.jpg`, `.gif`, `.svg`, `.pdf`) are copied without modification. Markdown files are passed through redactions (see below).
+
+#### Step 3 — Handle broken links (optional but recommended)
+
+When a document links to a file in the source repo that you are **not** publishing in the hub, that link will break. Use `link_rewrites` to redirect those links to their GitHub source instead:
+
+```yaml
+    link_rewrites:
+      - description: Point unpublished sibling docs at GitHub
+        pattern: '\]\(OPERATIONS\.md(#[^)]*)?\)'
+        replace: '](https://github.com/DCCA-ISCO/my-repo/blob/main/docs/OPERATIONS.md\1)'
+```
+
+You can also use `link_rewrites` to remap a filename if you renamed it in `dest`:
+
+```yaml
+      - description: Remap renamed file to its published path
+        pattern: '\]\(ARCHITECTURE\.md(#[^)]*)?\)'
+        replace: '](overview.md\1)'
+```
+
+Each rule is a Python-compatible regex `pattern` and a `replace` string. Rules are applied in order.
+
+#### Step 4 — Add a section landing page
+
+Create a file at `docs/imported/<name>/index.md` with a brief description of the system and a table of the documents you are publishing. This becomes the landing page when a user clicks the section in the left nav.
+
+#### Step 5 — Update `mkdocs.yml`
+
+Add a nav section for your new source:
+
+```yaml
+nav:
+  ...
+  - My System:
+    - imported/my-system/index.md
+    - Overview: imported/my-system/overview.md
+```
+
+#### Step 6 — Open a PR
+
+CI will validate `sources.yaml` and do a full site build to catch broken nav references. Once the PR merges, the next scheduled sync (daily at 08:00 HST) will pull the files into `docs/imported/`. You can also trigger a sync immediately:
+
+```
+gh workflow run sync.yml
+```
+
+The sync creates a follow-up PR (`chore/sync-imported-docs`) with only the imported file changes. Review the diff to verify redactions look correct, then merge to publish.
+
+---
+
+### From SharePoint, Local Files, or Other Non-GitHub Sources
+
+For documents that do not live in a GitHub repository, add them manually to the `docs/manual/` directory. These files are committed directly to `isco-docs-hub` and published on merge — no sync step required.
+
+#### Step 1 — Convert the document to Markdown
+
+The hub renders Markdown. You need to convert your source document before adding it.
+
+**From SharePoint:**
+
+1. Open the page or document in SharePoint.
+2. If it is a Word document (`.docx`), download it and convert using [Pandoc](https://pandoc.org/):
+   ```
+   pandoc input.docx -o output.md
+   ```
+3. If it is a SharePoint wiki page, copy the page content and paste it into a new `.md` file. Clean up any formatting that didn't transfer cleanly.
+
+**From a local file:**
+
+- `.docx` / `.pptx` — convert with Pandoc (see above).
+- `.pdf` — copy text content into a `.md` file, or export to Word first then convert.
+- Already Markdown — copy the file directly.
+
+Images referenced in the document should be placed in a subfolder alongside the markdown file (e.g., `docs/manual/my-doc/images/`).
+
+#### Step 2 — Add the file to `docs/manual/`
+
+Place your converted file under `docs/manual/`. Use a descriptive, hyphen-separated filename:
+
+```
+docs/manual/
+  patch-management-policy.md
+  incident-response-plan.md
+  onboarding-checklist.md
+```
+
+If the document has images, create a subdirectory:
+
+```
+docs/manual/
+  patch-management/
+    index.md
+    images/
+      process-diagram.png
+```
+
+#### Step 3 — Update `mkdocs.yml`
+
+Add your file to the `Manual Docs` section in `mkdocs.yml`:
+
+```yaml
+  - Manual Docs:
+    - docs/manual/index.md
+    - Patch Management Policy: manual/patch-management-policy.md
+    - Incident Response Plan: manual/incident-response-plan.md
+```
+
+#### Step 4 — Open a PR
+
+CI will build the site and catch any broken references. On merge, the deploy workflow publishes the site automatically — no sync needed.
+
+**Note:** Manually maintained documents are not automatically kept in sync with their source. If the SharePoint page or original file is updated, you will need to re-export and update the file in `isco-docs-hub` manually.
+
+---
+
+## Privacy and Redaction
+
+This site may be publicly accessible. All Markdown files pulled from GitHub repositories are passed through `config/redactions.yaml` before publishing. By default, AWS account IDs, resource ARNs, and specific resource identifiers are replaced with placeholders. The Git source repo remains unredacted.
+
+Manually maintained documents (`docs/manual/`) are **not** passed through redactions — review them for sensitive content before committing.
