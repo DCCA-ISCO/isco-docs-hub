@@ -56,6 +56,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+  # [IMPORTED_NAV_START]
   - WordPress (cca.hawaii.gov):
     - imported/wordpress-aws/index.md
     - Architecture: imported/wordpress-aws/architecture.md
@@ -78,6 +79,7 @@ nav:
     - Setup Walkthrough: imported/security/setup-walkthrough.md
     - Remediation Process: imported/security/remediation-process.md
     - Vulnerability Management: imported/security/vulnerability-management-process.md
+  # [IMPORTED_NAV_END]
   - Manual Docs:
     - manual/index.md
     - Converting to Markdown: manual/converting-to-markdown.md
