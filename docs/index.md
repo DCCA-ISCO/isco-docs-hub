@@ -107,15 +107,44 @@ You can also use `link_rewrites` to remap a filename if you renamed it in `dest`
 
 Each rule is a Python-compatible regex `pattern` and a `replace` string. Rules are applied in order.
 
-#### Step 4 — Open a PR
+#### Step 4 — Open a PR and merge it
 
-CI will validate `sources.yaml` and do a full site build. Once the PR merges, the next scheduled sync (daily at 08:00 HST) will automatically:
+!!! warning "Do not push directly to `master`"
+    Pushing directly to `master` will skip CI validation and trigger an immediate site deploy. Always use a pull request so the site build can catch errors before they go live.
 
-- Pull the files into `docs/imported/`
-- Create a section landing page at `docs/imported/<name>/index.md` (if one doesn't already exist)
-- Add the section and its pages to the site nav in `mkdocs.yml`
+**Create a branch and open a PR:**
 
-You can also trigger a sync immediately rather than waiting for the schedule:
+=== "GitHub web UI"
+    1. Go to [`config/sources.yaml`](https://github.com/DCCA-ISCO/isco-docs-hub/blob/master/config/sources.yaml) in the repo.
+    2. Click the **pencil (edit) icon** in the top-right of the file view.
+    3. Make your changes in the editor.
+    4. Scroll down to **Commit changes**, select **Create a new branch for this commit and start a pull request**, give the branch a short name (e.g. `add-my-system-docs`), and click **Propose changes**.
+    5. On the Pull Request page that opens, add a brief description and click **Create pull request**.
+
+=== "git CLI"
+    ```bash
+    git checkout -b add-my-system-docs
+    # edit config/sources.yaml
+    git add config/sources.yaml
+    git commit -m "add my-system to sources"
+    git push -u origin add-my-system-docs
+    gh pr create --base master --fill
+    ```
+
+**Wait for CI to pass**, then merge the PR:
+
+=== "GitHub web UI"
+    1. Open the PR in GitHub.
+    2. Wait for the **CI** check to show a green checkmark. If it fails, review the error in the Actions tab and fix `sources.yaml`.
+    3. Click **Merge pull request** → **Confirm merge**.
+    4. Click **Delete branch** to clean up.
+
+=== "gh CLI"
+    ```bash
+    gh pr merge --merge --delete-branch
+    ```
+
+**After merging**, the next scheduled sync (daily at 08:00 HST) will automatically pull the files, create a section landing page, and update the nav. To publish immediately instead of waiting:
 
 === "GitHub web UI"
     1. Go to the [isco-docs-hub Actions tab](https://github.com/DCCA-ISCO/isco-docs-hub/actions/workflows/sync.yml)
@@ -127,7 +156,7 @@ You can also trigger a sync immediately rather than waiting for the schedule:
     gh workflow run sync.yml
     ```
 
-The sync creates a follow-up PR (`chore/sync-imported-docs`) containing the pulled files, an auto-generated section landing page, and the updated nav. Review the diff to verify redactions look correct, then merge to publish.
+The sync creates a second PR (`chore/sync-imported-docs`) containing the pulled files, auto-generated landing page, and updated nav. **You must merge this PR too** — the site does not update until it is merged. Review the diff to verify redactions look correct, then merge using the same steps above.
 
 ---
 
