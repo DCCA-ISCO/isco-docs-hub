@@ -35,7 +35,7 @@ The clock starts when the finding first appears as NEW/ACTIVE in Security Hub (o
 
 ## Remediation Workflow
 
-1. **Identify** — Findings appear in Security Hub. CRITICAL and HIGH findings trigger automated notification via the `dcca-security-hub-critical-high` EventBridge rule (when enabled) to Teams and email.
+1. **Identify** — Findings appear in Security Hub. CRITICAL and HIGH findings trigger automated notification to Teams and email.
 
 2. **Triage** — ISCO-INFRA reviews the finding to confirm it is valid (not a false positive) and determines the affected resource and account owner.
 
