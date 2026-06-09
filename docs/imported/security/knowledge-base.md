@@ -39,7 +39,7 @@ Management Account
 |---|---|---|---|
 | **GuardDuty** | Threat detection — analyzes CloudTrail, VPC flow logs, DNS logs | All accounts | Security Hub |
 | **Inspector v2** | Vulnerability scanning — CVEs in OS packages on EC2, ECR images | All accounts (auto-enabled) | Security Hub |
-| **Security Hub** | Central dashboard — aggregates findings, scores against CIS/NIST/FSBP | All accounts | Lambda → Teams + SES (deployed, disabled to reduce noise — see Notifications below) |
+| **Security Hub** | Central dashboard — aggregates findings, scores against CIS/NIST/FSBP | All accounts | Lambda → Teams + SES |
 | **IAM Access Analyzer** | Detects resource policies granting access outside the org | Org-wide (dcca-org-analyzer) | Security Hub |
 | **Config** | Compliance evaluation — checks resources against CIS benchmark rules | All accounts via org conformance packs | Security Hub |
 | **CloudTrail** | Audit logging — records all API calls org-wide | All accounts/regions (org trail) | N/A (log source) |
@@ -116,12 +116,7 @@ aws configservice get-compliance-summary-by-config-rule \
 
 Security Hub CRITICAL + HIGH findings trigger a Lambda (`dcca-security-hub-notify`) via EventBridge rule `dcca-security-hub-critical-high`. The Lambda sends:
 - **Teams:** Adaptive Card via Power Automate webhook (SSM param: `/dcca/security/teams-webhook-url`)
-- **SES email:** To <personal-email>, isco-infra@dcca.hawaii.gov, <personal-email> from noreply-security@dcca.hawaii.gov
-
-**Currently disabled** to reduce noise while baseline findings are being remediated. Re-enable when finding volume is manageable:
-```bash
-aws events enable-rule --name dcca-security-hub-critical-high --profile audit
-```
+- **SES email:** To isco-infra@dcca.hawaii.gov from noreply-security@dcca.hawaii.gov
 
 **Note:** SES is in sandbox mode — emails only reach verified addresses until production access is requested.
 
@@ -182,7 +177,6 @@ terraform apply   # apply (conformance packs take ~30 min)
 - [ ] **Investigate account 971422687324 ("Production-Secure"):** Excluded from CIS conformance packs — no Config recorder, unknown purpose. Enroll via Control Tower or decommission, then remove from exclusion list.
 - **Note:** Management account (273354624047) is permanently excluded from conformance packs — AWS does not allow org conformance packs to target the management account.
 - [ ] **SES production access:** Notifications Lambda is deployed but SES is in sandbox mode — submit production access request in SES console.
-- [ ] **Re-enable notifications:** EventBridge rule `dcca-security-hub-critical-high` is disabled. Enable once baseline findings are remediated.
 - [ ] **Tag enforcement (Step 8):** Config rules requiring specific tags on EC2 and RDS
 - [ ] **CloudWatch cross-account observability (Step 9):** OAM sink in audit account + links from all source accounts
 - [ ] **Prod WPScan:** Weekly WordPress scan currently only covers dev — extend to prod
