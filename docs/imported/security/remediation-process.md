@@ -22,8 +22,8 @@ Remediation targets are based on finding severity:
 
 | Severity | Target Remediation Window | Escalation If Missed |
 |---|---|---|
-| **CRITICAL** | 15 calendar days | Escalate to Peter Faso (cfaso@dcca.hawaii.gov) immediately |
-| **HIGH** | 30 calendar days | Escalate to Peter Faso (cfaso@dcca.hawaii.gov) at 30 days |
+| **CRITICAL** | 15 calendar days | Escalate to Peter Faso (<personal-email>) immediately |
+| **HIGH** | 30 calendar days | Escalate to Peter Faso (<personal-email>) at 30 days |
 | **MEDIUM** | 90 calendar days | Document at next monthly review |
 | **LOW** | 180 calendar days | Accept or document at next monthly review |
 
@@ -71,7 +71,7 @@ When a finding cannot be remediated within the SLA (due to architectural constra
 3. Record the acceptance in [`docs/TODOS.md`](https://github.com/DCCA-ISCO/dcca-security/blob/main/docs/docs/TODOS.md) as a closed item with rationale
 4. Review accepted risks at each monthly review cycle to confirm they remain appropriate
 
-Risk acceptance decisions for CRITICAL findings require Peter Faso (cfaso@dcca.hawaii.gov) sign-off.
+Risk acceptance decisions for CRITICAL findings require Peter Faso (<personal-email>) sign-off.
 
 ---
 
@@ -79,7 +79,7 @@ Risk acceptance decisions for CRITICAL findings require Peter Faso (cfaso@dcca.h
 
 | Condition | Action |
 |---|---|
-| CRITICAL finding open > 15 days | ISCO-INFRA notifies Peter Faso (cfaso@dcca.hawaii.gov) (cfaso@dcca.hawaii.gov) |
-| HIGH finding open > 30 days | ISCO-INFRA notifies Peter Faso (cfaso@dcca.hawaii.gov) |
+| CRITICAL finding open > 15 days | ISCO-INFRA notifies Peter Faso (<personal-email>) (<personal-email>) |
+| HIGH finding open > 30 days | ISCO-INFRA notifies Peter Faso (<personal-email>) |
 | Finding requires cross-account coordination | ISCO-INFRA contacts the relevant account owner directly |
 | Finding in networking account may be intentional | Coordinate with networking team before remediating |

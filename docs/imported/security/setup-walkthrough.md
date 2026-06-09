@@ -115,7 +115,7 @@ How the centralized security monitoring stack was built, step by step. Written s
 
 **What:** EventBridge rule captures CRITICAL + HIGH Security Hub findings (NEW + ACTIVE) and invokes a Lambda that delivers alerts via two channels:
 - **Microsoft Teams:** Adaptive Card via Power Automate webhook (URL stored as SecureString in SSM: `/dcca/security/teams-webhook-url`)
-- **SES email:** To mahhomau@dcca.hawaii.gov, isco-infra@dcca.hawaii.gov, cfaso@dcca.hawaii.gov
+- **SES email:** To <personal-email>, isco-infra@dcca.hawaii.gov, <personal-email>
 
 **Resources:**
 - Lambda: `dcca-security-hub-notify` (Python 3.12, 30s timeout)
