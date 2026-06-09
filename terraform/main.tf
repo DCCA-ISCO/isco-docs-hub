@@ -27,6 +27,20 @@ provider "aws" {
   }
 }
 
+# WAF for CloudFront must be in us-east-1 regardless of site region
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+
+  default_tags {
+    tags = {
+      Project   = "isco-docs-hub"
+      ManagedBy = "Terraform"
+      Repo      = "DCCA-ISCO/isco-docs-hub"
+    }
+  }
+}
+
 locals {
   bucket_name = "dcca-isco-docs-hub-${data.aws_caller_identity.current.account_id}"
 }
@@ -63,6 +77,54 @@ resource "aws_s3_bucket_public_access_block" "site" {
   restrict_public_buckets = true
 }
 
+# ---------- WAF — IP allowlist (CloudFront WAF must live in us-east-1) ----------
+
+resource "aws_wafv2_ip_set" "allowed" {
+  provider           = aws.us_east_1
+  name               = "isco-docs-hub-allowed-ips"
+  description        = "Org egress IPs allowed to access the docs hub"
+  scope              = "CLOUDFRONT"
+  ip_address_version = "IPV4"
+  addresses          = ["162.221.246.41/32"]
+}
+
+resource "aws_wafv2_web_acl" "site" {
+  provider = aws.us_east_1
+  name     = "isco-docs-hub-acl"
+  scope    = "CLOUDFRONT"
+
+  default_action {
+    block {}
+  }
+
+  rule {
+    name     = "AllowOrgIPs"
+    priority = 1
+
+    action {
+      allow {}
+    }
+
+    statement {
+      ip_set_reference_statement {
+        arn = aws_wafv2_ip_set.allowed.arn
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "AllowOrgIPs"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "isco-docs-hub-acl"
+    sampled_requests_enabled   = true
+  }
+}
+
 # ---------- CloudFront distribution ----------
 
 resource "aws_cloudfront_origin_access_control" "site" {
@@ -79,6 +141,7 @@ resource "aws_cloudfront_distribution" "site" {
   comment             = "ISCO Documentation Hub"
   default_root_object = "index.html"
   price_class         = "PriceClass_100" # US, Canada, Europe — cheapest tier
+  web_acl_id          = aws_wafv2_web_acl.site.arn
 
   origin {
     domain_name              = aws_s3_bucket.site.bucket_regional_domain_name
