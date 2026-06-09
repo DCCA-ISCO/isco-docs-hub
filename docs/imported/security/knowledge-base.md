@@ -116,7 +116,7 @@ aws configservice get-compliance-summary-by-config-rule \
 
 Security Hub CRITICAL + HIGH findings trigger a Lambda (`dcca-security-hub-notify`) via EventBridge rule `dcca-security-hub-critical-high`. The Lambda sends:
 - **Teams:** Adaptive Card via Power Automate webhook (SSM param: `/dcca/security/teams-webhook-url`)
-- **SES email:** To mahhomau@dcca.hawaii.gov, isco-infra@dcca.hawaii.gov, cfaso@dcca.hawaii.gov from noreply-security@dcca.hawaii.gov
+- **SES email:** To <personal-email>, isco-infra@dcca.hawaii.gov, <personal-email> from noreply-security@dcca.hawaii.gov
 
 **Currently disabled** to reduce noise while baseline findings are being remediated. Re-enable when finding volume is manageable:
 ```bash
