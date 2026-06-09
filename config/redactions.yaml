@@ -9,8 +9,8 @@
 # Binary files (images, PDFs) are not redacted.
 
 redactions:
-  - description: AWS account IDs (DCCA dev, prod, sandbox)
-    pattern: '\b(390844744503|565393047558|314562758677)\b'
+  - description: AWS account IDs (all known DCCA accounts)
+    pattern: '\b(390844744503|565393047558|314562758677|897729111590|273354624047|971422687324)\b'
     replace: '<aws-account-id>'
 
   - description: VPC IDs
@@ -33,10 +33,30 @@ redactions:
     pattern: 'ami-[0-9a-f]{8,17}'
     replace: 'ami-XXXXXXXXX'
 
-  - description: KMS Key ARNs
-    pattern: 'arn:aws:kms:[a-z0-9-]+:\d+:key/[a-f0-9-]+'
-    replace: 'arn:aws:kms:<region>:<account>:key/<key-id>'
+  - description: KMS Key ARNs (handles both raw account IDs and already-redacted placeholder)
+    pattern: 'arn:aws:kms:[a-z0-9-]+:(?:\d+|<aws-account-id>):key/[a-f0-9-]+'
+    replace: 'arn:aws:kms:<region>:<aws-account-id>:key/<key-id>'
 
   - description: IAM Role ARNs (account ID component)
-    pattern: 'arn:aws:iam::\d+:role/'
-    replace: 'arn:aws:iam::<account>:role/'
+    pattern: 'arn:aws:iam::(?:\d+|<aws-account-id>):role/'
+    replace: 'arn:aws:iam::<aws-account-id>:role/'
+
+  - description: GuardDuty and Security Hub detector IDs (32-char hex strings)
+    pattern: '\b[a-f0-9]{32}\b'
+    replace: '<detector-id>'
+
+  - description: Internal host IPs in 10.115.x.x range — NLB static IPs etc. (CIDRs are intentionally left)
+    pattern: '10\.115\.\d{1,3}\.\d{1,3}(?![0-9/])'
+    replace: '<internal-ip>'
+
+  - description: Personal email addresses of named individuals (not role aliases)
+    pattern: '\b(mahhomau|cfaso)@dcca\.hawaii\.gov\b'
+    replace: '<personal-email>'
+
+  - description: IAM role and instance profile names (dcca-prefixed, containing -role)
+    pattern: '\bdcca-[a-z0-9-]+-role(?:-[a-z0-9-]+)?\b'
+    replace: '<iam-role-name>'
+
+  - description: Security Hub Lambda and EventBridge rule names
+    pattern: '\bdcca-security-hub-[a-z-]+\b'
+    replace: '<aws-resource-name>'
